@@ -166,10 +166,10 @@ jobs:
       # Well until we hit GitHub's limit of 5GB :)
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
-      - name: 🚚 Swap build cache
-        run: |
-          rm -rf /tmp/.docker-cache
-          mv /tmp/.docker-cache-new /tmp/.docker-cache
+      # - name: 🚚 Swap build cache
+      #   run: |
+      #     rm -rf /tmp/.docker-cache
+      #     mv /tmp/.docker-cache-new /tmp/.docker-cache
       - name: 🚀 Push
         # yamllint disable rule:line-length
         run: |
@@ -202,52 +202,52 @@ jobs:
               "version": "${{ needs.information.outputs.version }}"
             }
 
-  publish-beta:
-    name: 📢 Publish to beta repository
-    if: |
-      needs.information.outputs.environment == 'beta' ||
-      needs.information.outputs.environment == 'stable'
-    needs:
-      - information
-      - deploy
-    environment:
-      name: ${{ needs.information.outputs.environment }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🚀 Dispatch repository updater update signal
-        uses: peter-evans/repository-dispatch@v3.0.0
-        with:
-          token: ${{ secrets.DISPATCH_TOKEN }}
-          repository: ${{ github.repository_owner }}/${{ inputs.repository_beta }}
-          event-type: update
-          client-payload: >
-            {
-              "addon": "${{ needs.information.outputs.slug }}",
-              "name": "${{ needs.information.outputs.name }}",
-              "repository": "${{ github.repository }}",
-              "version": "${{ github.event.release.tag_name }}"
-            }
+  # publish-beta:
+  #   name: 📢 Publish to beta repository
+  #   if: |
+  #     needs.information.outputs.environment == 'beta' ||
+  #     needs.information.outputs.environment == 'stable'
+  #   needs:
+  #     - information
+  #     - deploy
+  #   environment:
+  #     name: ${{ needs.information.outputs.environment }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: 🚀 Dispatch repository updater update signal
+  #       uses: peter-evans/repository-dispatch@v3.0.0
+  #       with:
+  #         token: ${{ secrets.DISPATCH_TOKEN }}
+  #         repository: ${{ github.repository_owner }}/${{ inputs.repository_beta }}
+  #         event-type: update
+  #         client-payload: >
+  #           {
+  #             "addon": "${{ needs.information.outputs.slug }}",
+  #             "name": "${{ needs.information.outputs.name }}",
+  #             "repository": "${{ github.repository }}",
+  #             "version": "${{ github.event.release.tag_name }}"
+  #           }
 
-  publish-stable:
-    name: 📢 Publish to stable repository
-    if: needs.information.outputs.environment == 'stable'
-    needs:
-      - information
-      - deploy
-    environment:
-      name: ${{ needs.information.outputs.environment }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🚀 Dispatch repository updater update signal
-        uses: peter-evans/repository-dispatch@v3.0.0
-        with:
-          token: ${{ secrets.DISPATCH_TOKEN }}
-          repository: ${{ github.repository_owner }}/${{ inputs.repository }}
-          event-type: update
-          client-payload: >
-            {
-              "addon": "${{ needs.information.outputs.slug }}",
-              "name": "${{ needs.information.outputs.name }}",
-              "repository": "${{ github.repository }}",
-              "version": "${{ github.event.release.tag_name }}"
-            }
+  # publish-stable:
+  #   name: 📢 Publish to stable repository
+  #   if: needs.information.outputs.environment == 'stable'
+  #   needs:
+  #     - information
+  #     - deploy
+  #   environment:
+  #     name: ${{ needs.information.outputs.environment }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: 🚀 Dispatch repository updater update signal
+  #       uses: peter-evans/repository-dispatch@v3.0.0
+  #       with:
+  #         token: ${{ secrets.DISPATCH_TOKEN }}
+  #         repository: ${{ github.repository_owner }}/${{ inputs.repository }}
+  #         event-type: update
+  #         client-payload: >
+  #           {
+  #             "addon": "${{ needs.information.outputs.slug }}",
+  #             "name": "${{ needs.information.outputs.name }}",
+  #             "repository": "${{ github.repository }}",
+  #             "version": "${{ github.event.release.tag_name }}"
+  #           }
