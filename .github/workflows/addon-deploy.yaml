@@ -95,14 +95,14 @@ jobs:
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
-      - name: 🏗 Set up build cache
-        id: cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: /tmp/.docker-cache
-          key: docker-${{ matrix.architecture }}-${{ github.sha }}
-          restore-keys: |
-            docker-${{ matrix.architecture }}
+      # - name: 🏗 Set up build cache
+      #   id: cache
+      #   uses: actions/cache@v4.2.3
+      #   with:
+      #     path: /tmp/.docker-cache
+      #     key: docker-${{ matrix.architecture }}-${{ github.sha }}
+      #     restore-keys: |
+      #       docker-${{ matrix.architecture }}
       - name: 🏗 Set up QEMU
         uses: docker/setup-qemu-action@v3.6.0
       - name: 🏗 Set up Docker Buildx
@@ -145,13 +145,13 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ needs.information.outputs.slug }}/${{ matrix.architecture }}:${{ needs.information.outputs.environment }}
             ghcr.io/${{ github.repository_owner }}/${{ needs.information.outputs.slug }}/${{ matrix.architecture }}:${{ needs.information.outputs.version }}
-          # yamllint enable rule:line-length
+          
           context: ${{ needs.information.outputs.target }}
-          file: ${{ needs.information.outputs.target }}/Dockerfile
+          file: ${{ needs.information.outputs.target }}/Dockerfile          
           cache-from: |
-            type=local,src=/tmp/.docker-cache
-            ghcr.io/${{ github.repository_owner }}/${{ needs.information.outputs.slug }}/${{ matrix.architecture }}:edge
-          cache-to: type=local,mode=max,dest=/tmp/.docker-cache-new
+            type=registry,ref=${{ github.repository_owner }}/${{ needs.information.outputs.slug }}/${{ matrix.architecture }}:edge
+          # yamllint enable rule:line-length
+          cache-to: type=inline
           platforms: ${{ steps.flags.outputs.platform }}
           build-args: |
             BUILD_ARCH=${{ matrix.architecture }}
