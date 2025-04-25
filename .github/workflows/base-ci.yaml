@@ -113,14 +113,14 @@ jobs:
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v4
-      # - name: 🏗 Set up build cache
-      #   id: cache
-      #   uses: actions/cache@v4.2.3
-      #   with:
-      #     path: /tmp/.docker-cache
-      #     key: docker-${{ github.ref }}-${{ matrix.architecture }}-${{ github.sha }}
-      #     restore-keys: |
-      #       docker-${{ github.ref }}-${{ matrix.architecture }}
+      - name: 🏗 Set up build cache
+        id: cache
+        uses: actions/cache@v4.2.3
+        with:
+          path: /tmp/.docker-cache
+          key: docker-${{ github.ref }}-${{ matrix.architecture }}-${{ github.sha }}
+          restore-keys: |
+            docker-${{ github.ref }}-${{ matrix.architecture }}
       - name: 🏗 Set up QEMU
         uses: docker/setup-qemu-action@v3.6.0
       - name: 🏗 Set up Docker Buildx
@@ -147,7 +147,7 @@ jobs:
             exit 1
           fi
       - name: 🚀 Build
-        uses: docker/build-push-action@v6.15.0
+        uses: docker/build-push-action@v6.16.0
         with:
           push: false
           context: ${{ needs.information.outputs.target }}
